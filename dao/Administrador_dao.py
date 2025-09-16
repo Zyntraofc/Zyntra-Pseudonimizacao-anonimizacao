@@ -1,66 +1,72 @@
-#Importação de classes necessárias para manipulação do database
+# Importação de classes necessárias para manipulação do database
 from dao import Conexao
 from model.Administrador import Administrador
 
-
-#Função para listagem de administradores da tabela administradores
+# Função para listagem de administradores da tabela administradores
 def listar_administradores():
     
-    #Atribuindo a variável conn de conexão o valor retornado pelo método 'get_connection' que retorna a conexão com o database
+    # Atribuindo a variável conn de conexão o valor retornado pelo método 'get_connection'
     conn = Conexao.get_connection()
-    #Verificação se a conexão é nula, se for retorna nulo
+    # Verificação se a conexão é nula, se for retorna lista vazia
     if not conn:
-        return None
+        return []
 
     try:
-        #Abrindo cursor para manipular o databse
+        # Abrindo cursor para manipular o database
         cur = conn.cursor()
-        #Query a ser executada na tabela Administrador
+        # Query a ser executada na tabela Administrador
         query = "SELECT id_adm, email, hash_senha FROM administrador"
-        #Execução da query pelo cursor
+        # Execução da query pelo cursor
         cur.execute(query)
-        #Atribuido a uma variável todos os valores e linhas encontrados no database
+        # Atribuido a uma variável todos os valores e linhas encontrados no database
         administradores = cur.fetchall()
         
-        #List comprehension para atribuir objetos tipo Administrador a lista com base em cada linha da tabela Administrador do database
+        # List comprehension para atribuir objetos tipo Administrador a lista
         admins = [Administrador(a[0], a[1], a[2]) for a in administradores]
-        #Retornando a lista
+        # Retornando a lista
         return admins 
 
-    #Em caso de erros, printa que houve erros e o erro, depois retorna lista vazia
+    # Em caso de erros, printa que houve erros e o erro, depois retorna lista vazia
     except Exception as e:
         print("Erro ao listar:", e)
         return []
-    #Desconecta antes do retorno
+    # Desconecta antes do retorno
     finally:
         cur.close()
         conn.close()
 
-
-#Função para inserção na tabela administradores_anonimo
-def inserir_administrador(administrador : Administrador):
-    #Atribuindo a variável conn de conexão o valor retornado pelo método 'get_connection' que retorna a conexão com o database
+# Função para inserção na tabela administradores_anonimo
+def inserir_administrador(administrador: Administrador):
+    # Atribuindo a variável conn de conexão o valor retornado pelo método 'get_connection'
     conn = Conexao.get_connection()
-    #Verificação de se a conexão não é nula, se for, retorna nulo
+    # Verificação de se a conexão não é nula, se for, retorna False
     if not conn:
-        return None
+        return False
     
     try:
-        #Abrindo cursor para manipulação do database
+        # Abrindo cursor para manipulação do database
         cur = conn.cursor()
-        #Insert a ser executado na tabela administrador_anonimo
-        insert = "insert into administrador_anonimo (email, hash_senha) values (%s, %s)"
-        #Execução do insert pelo cursor, e substituição dos valores
+        # Insert a ser executado na tabela administrador_anonimo
+        insert = "INSERT INTO administrador_anonimo (email, hash_senha) VALUES (%s, %s)"
+        # Execução do insert pelo cursor, e substituição dos valores
         cur.execute(insert, (administrador.email, administrador.hash_senha))
-        #Retorno de execução
-        if(conn != None):
-            return False
-        else:
-            return True
-    #Em caso de erro retorna qual é o erro
+        
+        # COMMIT necessário para salvar as alterações
+        conn.commit()
+        
+        # Retorna True indicando sucesso
+        return True
+        
+    # Em caso de erro retorna qual é o erro e False
     except Exception as e:
-        print("Erro ao inserir" + e)
-    #Desconecta antes do retorno
+        print("Erro ao inserir:", e)
+        # Rollback em caso de erro
+        conn.rollback()
+        return False
+        
+    # Desconecta antes do retorno
     finally:
-        conn.close
-        cur.close
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
