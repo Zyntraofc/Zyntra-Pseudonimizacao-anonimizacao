@@ -81,9 +81,3 @@ def inserir_indice_classificacao(indice_classificacao : Indice_classificacao):
             conn.close()
         if cur:
             cur.close()
-    
-
-
-
-
-
