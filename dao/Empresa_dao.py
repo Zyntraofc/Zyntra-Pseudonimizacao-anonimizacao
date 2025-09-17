@@ -67,7 +67,7 @@ def inserir_empresa(empresa : Empresa):
         telefone, 
         id_tipo_empresa
     ) values (%s, %s, %s, %s, %s, %s, %s)
-)"""
+"""
         #Executando comando de conexão e atribuindo os parametros
         cur.execute(insert, (empresa.id_indice_classificacao, empresa.id_status_aprovacao, empresa.nome, empresa.cnpj, empresa.email, empresa.telefone, empresa.id_tipo_empresa))
 
