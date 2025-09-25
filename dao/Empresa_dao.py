@@ -85,9 +85,3 @@ def inserir_empresa(empresa : Empresa):
             conn.close()
         if cur:
             cur.close()
-    
-
-
-
-
-
