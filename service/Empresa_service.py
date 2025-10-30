@@ -44,8 +44,8 @@ def anonimizar_e_persistir_empresas():
     
     for _, row in df.iterrows():
         empresa_anon = Empresa(
-            None,
-            None,
+            row.get("id_empresa"),
+            row.get("id_tipo_empresa"),
             row.get("id_indice_classificacao"),
             row.get("id_status_aprovacao"),
             row.get("nome_anon"),
