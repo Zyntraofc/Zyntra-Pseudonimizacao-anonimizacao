@@ -59,17 +59,17 @@ def inserir_empresa(empresa : Empresa):
         #Comando de inserção na tabela empresa_anonimo
         insert = """
     insert into empresa_anonimo (
+        id_tipo_empresa, 
         id_indice_classificacao, 
         id_status_aprovacao, 
         nome, 
         cnpj, 
         email, 
-        telefone, 
-        id_tipo_empresa
+        telefone 
     ) values (%s, %s, %s, %s, %s, %s, %s)
 """
         #Executando comando de conexão e atribuindo os parametros
-        cur.execute(insert, (empresa.id_indice_classificacao, empresa.id_status_aprovacao, empresa.nome, empresa.cnpj, empresa.email, empresa.telefone, empresa.id_tipo_empresa))
+        cur.execute(insert, (empresa.id_tipo_empresa, empresa.id_indice_classificacao, empresa.id_status_aprovacao, empresa.nome, empresa.cnpj, empresa.email, empresa.telefone))
 
         #Commitando a inserção na conexão
         conn.commit()
@@ -85,9 +85,3 @@ def inserir_empresa(empresa : Empresa):
             conn.close()
         if cur:
             cur.close()
-    
-
-
-
-
-
